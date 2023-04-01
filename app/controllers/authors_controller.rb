@@ -7,15 +7,17 @@ class AuthorsController < ApplicationController
   end
 
   def create
-    author = Author.create(author_params)
-
-    render json: author, status: :created
+    @author = Author.new(author_params)
+    if author.save
+      redirect_to author_path(author)
+    else
+      render :new, flash: { error: author.errors.full_messages.join(", ") }
+    end
   end
 
   private
-  
+
   def author_params
-    params.permit(:email, :name)
+    params.require(:author).permit(:name, :email)
   end
-  
 end
